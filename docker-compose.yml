@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  news:
+    container_name: news
+    build: .
+    restart: always
+    ports:
+      - "${HTTP_PORT}:${HTTP_PORT}"
+    environment:
+      HTTP_PORT: ${HTTP_PORT}
+      LOG_LEVEL: ${LOG_LEVEL}
+      LOG_OUTPUT: ${LOG_OUTPUT}
+      PG_URL: ${PG_URL}
+      JWT_KEY: ${JWT_KEY}
+    networks:
+      - news
+
+
+  postgres:
+    container_name: news-postgres
+    image: postgres:15
+    restart: always
+    ports:
+      - "5432:5432"
+#    volumes:
+#      - ./postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    networks:
+      - news
+
+
+networks:
+  news:
+    driver: bridge
